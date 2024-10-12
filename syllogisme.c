@@ -130,6 +130,21 @@ void scanfTypeFigure()
 
     printf("Quel est le numero de la figure du syllogisme : 1 , 2 , 3 ou 4 \n");
     printf("0 pour annule la saisie\n");
+    int val;
+    int res = scanf("%d", &val);
+    if (res == 1 && val >= 0 && val <= 4)
+    {
+        printf("Vous avez choisi la figure %d", val);
+    }
+    else if (res != 1)
+    {
+        printf("Erreur");
+    }
+    else
+    {
+        printf("La saisie n'est pas VALIDE\n");
+        scanfTypeFigure();
+    }
 }
 
 void askQuantificateur()
