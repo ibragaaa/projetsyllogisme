@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "syllogisme.h"
+
+typedef struct
+{
+    bool U1, U2, Uc, A1, A2, Ac, S, P;
+} Syllogysme;
+
 int size_quant_universelles = 12;
 char *list_quant_universelles[] = {
     "Tout",
