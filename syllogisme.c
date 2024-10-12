@@ -8,6 +8,11 @@ typedef struct
     bool U1, U2, Uc, A1, A2, Ac, S, P;
 } Syllogysme;
 
+typedef struct
+{
+    char *quant1, quant2, quant3, sujet, predicat, moyenTerme
+} truc;
+
 int size_quant_universelles = 12;
 char *list_quant_universelles[] = {
     "Tout",
@@ -166,6 +171,9 @@ void askQuantificateur()
             printf("Liste quantifications existentielles\n");
             printList(list_quant_existentielles, size_quant_existentielles);
             scanfList(list_quant_existentielles, size_quant_existentielles);
+            /*Syllogysme.u1 = true ;
+            Syllogysme.a1 = true ;
+            truc.quand1 = "ehfbezfbez" ; */
         }
         else if (val == 2)
         {
