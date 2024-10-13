@@ -219,9 +219,6 @@ void askQuantificateur(Syllogysme *s, int valQuant)
             chaine = scanfList(list_quant_existentielles, size_quant_existentielles);
             a = false;
             b = true;
-            /*Syllogysme.u1 = true ;
-            Syllogysme.a1 = true ;
-            truc.quand1 = "ehfbezfbez" ; */
         }
         else if (val == 2)
         {
