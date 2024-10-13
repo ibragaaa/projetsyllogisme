@@ -190,6 +190,26 @@ void scanfTypeFigure(Syllogysme *s)
     {
         printf("Vous avez choisi la figure %d\n", val);
         s->figure = val;
+        if (val == 1)
+        {
+            s->P = true;
+            s->S = true;
+        }
+        else if (val == 2)
+        {
+            s->P = false;
+            s->S = true;
+        }
+        else if (val == 3)
+        {
+            s->P = true;
+            s->S = false;
+        }
+        else if (val == 4)
+        {
+            s->P = false;
+            s->S = false;
+        }
     }
     else if (res != 1)
     {
