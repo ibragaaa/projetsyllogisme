@@ -4,6 +4,7 @@
 
 int main()
 {
-    askSylo();
+    Syllogysme s = initSyllo();
+    askSylo(&s);
     return 0;
 }
