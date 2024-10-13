@@ -1,14 +1,25 @@
 #ifndef SYLLOGISME_H
 #define SYLLOGISME_H
 
-void askSylo();
+#include <stdbool.h>
+
+typedef struct
+{
+    bool U1, U2, Uc, A1, A2, Ac, S, P;
+    char quant1[50], quant2[50], quant3[50], sujet[50], predicat[50], moyenTerme[50];
+    int figure;
+} Syllogysme;
+
+void askSylo(Syllogysme *s);
+Syllogysme initSyllo();
 int askOrderSeizure();
-void askQuantificateur();
+void askQuantificateur(Syllogysme *s, int valQuant);
 void printList(char **list, int size);
-void methode1();
-void methode2();
-void scanfList(char **list, int size);
-void scanfNom(char *nom);
-void scanfTypeFigure();
+void methode1(Syllogysme *s);
+void methode2(Syllogysme *s);
+char *scanfList(char **list, int size);
+void scanfNom(char *nom, Syllogysme *s, int val);
+void scanfTypeFigure(Syllogysme *s);
+void printSyll(Syllogysme *s);
 
 #endif
