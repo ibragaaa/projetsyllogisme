@@ -18,8 +18,11 @@ void printList(char **list, int size);
 void methode1(Syllogysme *s);
 void methode2(Syllogysme *s);
 char *scanfList(char **list, int size);
-void scanfNom(char *nom, Syllogysme *s, int val);
+char *scanfNom(char *nom);
 void scanfTypeFigure(Syllogysme *s);
 void printSyll(Syllogysme *s);
+
+char *demande1(char *s1, char *s2, Syllogysme *s);
+void demande2(Syllogysme *s);
 
 #endif
