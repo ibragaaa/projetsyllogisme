@@ -23,6 +23,7 @@ void scanfTypeFigure(Syllogysme *s);
 void printSyll(Syllogysme *s);
 
 char *demande1(char *s1, char *s2, Syllogysme *s);
+void demande1_bis(char *s1, char *s2, Syllogysme *s);
 void demande2(Syllogysme *s);
 
 #endif
