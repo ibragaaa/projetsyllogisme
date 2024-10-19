@@ -175,14 +175,11 @@ void methode2(Syllogysme *s)
             strcpy(s->sujet, sujet2);
         }
     }
-    printf("Etape (6 / 9) :\n");
+
     if (strcmp(s->sujet, "") == 0)
     {
+        printf("Etape (6 / 9) :\n");
         strcpy(s->sujet, scanfNom("predicat de la 2eme proposition"));
-    }
-    else
-    {
-        printf("Il n'y a pas d'etape 6 dans se cas\n");
     }
 
     printf("Etape (7 / 9) :\n");
@@ -236,6 +233,7 @@ char *demande1(char *s1, char *s2, Syllogysme *s)
         {
             printf("fais\n");
             strcpy(res, scanfNom("sujet"));
+            demande1_bis(s1, s2, s);
         }
         else
         {
@@ -244,6 +242,45 @@ char *demande1(char *s1, char *s2, Syllogysme *s)
         }
     }
     return res;
+}
+
+void demande1_bis(char *s1, char *s2, Syllogysme *s)
+{
+    printf("Etape (6 / 9) :\n");
+    printf("le predicat de la deuxieme premisse est-il sujet ou predicat de la premiere premisse ? \n");
+    printf("- 1 il est le sujet : %s\n", s1);
+    printf("- 2 il est le predicat : %s\n", s2);
+    printf("- 0 pour annule la saisie\n");
+    int a;
+    int ret = scanf("%d", &a);
+    if (ret != 1)
+    {
+        printf("Erreur\n");
+    }
+    else
+    {
+        if (a == 1)
+        {
+            s->figure = 1;
+            strcpy(s->moyenTerme, s1);
+            strcpy(s->predicat, s2);
+        }
+        else if (a == 2)
+        {
+            s->figure = 2;
+            strcpy(s->moyenTerme, s2);
+            strcpy(s->predicat, s);
+        }
+        else if (a == 0)
+        {
+            printf("FIN DE LA SAISIE\n");
+        }
+        else
+        {
+            printf("La saisie n'est pas VALIDE\n");
+            demande1_bis(s1, s2, s);
+        }
+    }
 }
 
 void demande2(Syllogysme *s)
