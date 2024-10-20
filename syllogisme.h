@@ -11,7 +11,8 @@ typedef struct
 } Syllogysme;
 
 void askSylo(Syllogysme *s);
-Syllogysme initSyllo();
+Syllogysme *initSyllo();
+void freeSyllo(Syllogysme *s);
 int askOrderSeizure();
 void askQuantificateur(Syllogysme *s, int valQuant);
 void printList(char **list, int size);
