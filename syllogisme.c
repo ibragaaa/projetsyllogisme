@@ -89,25 +89,14 @@ int askOrderSeizure()
     }
 }
 /*fonction qui initialise un Syllogisme */
-Syllogysme initSyllo()
+Syllogysme *initSyllo()
 {
-    Syllogysme s;
-    s.U1 = true;
-    s.U2 = true;
-    s.Uc = true;
-    s.A1 = true;
-    s.A2 = true;
-    s.Ac = true;
-    s.S = true;
-    s.P = true;
-    s.figure = 0;
-    strcpy(s.quant1, "");
-    strcpy(s.quant2, "");
-    strcpy(s.quant3, "");
-    strcpy(s.sujet, "");
-    strcpy(s.predicat, "");
-    strcpy(s.moyenTerme, "");
+    Syllogysme *s = malloc(sizeof(Syllogysme));
     return s;
+}
+void freeSyllo(Syllogysme *s)
+{
+    free(s);
 }
 /* fonction de saisie pour la methode 1*/
 void methode1(Syllogysme *s)
@@ -185,8 +174,10 @@ void methode2(Syllogysme *s)
     printf("Etape (7 / 9) :\n");
     printf("quantificateur de la conclusion\n");
     askQuantificateur(s, 3);
+    /*
     printf("Etape (8 / 9) :\n");
     demande2(s);
+    */
     printf("Etape (9 / 9) :\n");
 
     printSyll(s);
@@ -262,14 +253,18 @@ void demande1_bis(char *s1, char *s2, Syllogysme *s)
         if (a == 1)
         {
             s->figure = 1;
+            s->S = true;
+            s->P = true;
             strcpy(s->moyenTerme, s1);
             strcpy(s->predicat, s2);
         }
         else if (a == 2)
         {
             s->figure = 2;
+            s->S = true;
+            s->P = false;
             strcpy(s->moyenTerme, s2);
-            strcpy(s->predicat, s);
+            strcpy(s->predicat, s1);
         }
         else if (a == 0)
         {
@@ -299,9 +294,11 @@ void demande2(Syllogysme *s)
     {
         if (a == 1)
         {
+            s->S = true;
         }
         else if (a == 2)
         {
+            s->S = false;
         }
         else
         {
@@ -332,6 +329,7 @@ void printSyll(Syllogysme *s)
         printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->predicat, s->moyenTerme, s->quant2, s->moyenTerme, s->sujet, s->quant3, s->sujet, s->predicat);
     }
     printf("U1 : %d ,U2 : %d ,Uc : %d ,A1 : %d ,A2 : %d ,Ac : %d ,S : %d ,P : %d\n", s->U1, s->U2, s->Uc, s->A1, s->A2, s->Ac, s->S, s->P);
+    printf("Le sujet est \"%s\" , le predicat est \"%s\" , le moyen terme est \"%s\" \n", s->sujet, s->predicat, s->moyenTerme);
 }
 
 /*fonction qui prend en param le nom : soit le sujet , soit le predicat , soit le moyen terme ( juste pour l'affichage)
@@ -459,8 +457,8 @@ void askQuantificateur(Syllogysme *s, int valQuant)
         else if (val == 4)
         {
             printf("Liste quantifications existentielles negative\n");
-            printList(list_quant_universelles_negatif, size_quant_existentielles_negatif);
-            chaine = scanfList(list_quant_universelles_negatif, size_quant_existentielles_negatif);
+            printList(list_quant_existentielles_negatif, size_quant_existentielles_negatif);
+            chaine = scanfList(list_quant_existentielles_negatif, size_quant_existentielles_negatif);
             a = false;
             b = false;
         }
