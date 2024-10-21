@@ -4,364 +4,552 @@
 #include <string.h>
 #include "syllogisme.h"
 
-int size_quant_universelles = 12;
-char *list_quant_universelles[] = {
-    "Tout",
-    "Tous",
-    "Chaque",
-    "Chacun(e)",
-    "N'importe quel(le)",
-    "Quiconque",
-    "Peu importe qui",
-    "Peu importe quoi",
-    "Qui que ce soit",
-    "Quel(le) que soit",
-    "Quoi que",
-    "Ou que"};
-
-int size_quant_universelles_negatif = 3;
-char *list_quant_universelles_negatif[] = {
-    "Personne",
-    "Rien",
-    "Aucun"};
-
-int size_quant_existentielles = 10;
-char *list_quant_existentielles[] = {
-    "Quelqu'un",
-    "Quelque chose",
-    "Certains / Certaines",
-    "Un(e)",
-    "Il existe",
-    "Il y a",
-    "Un(e) certain(e)",
-    "Au moins un(e)",
-    "Quel que",
-    "Parfois"};
-
-int size_quant_existentielles_negatif = 2;
-char *list_quant_existentielles_negatif[] = {
-    "Pas tout le monde",
-    "Pas toujours"};
-/*Fonction qui prend en param un Syllogisme , elle demande a l'utilisateur qu'elle methode utiliser pour saisir un syllogisme
-- 0 pour le rien faire
-- 1 pour utiliser la methode 1
-- 2 pour utiliser la methode 2
-*/
-void askSylo(Syllogysme *s)
+/*fonction qui initialise un syllogisme */
+syllogisme *initSyllo()
 {
-    printf("Bonjour \nNous allons commencer la saisie d'un Syllogisme !! \n");
-
-    int ordre = askOrderSeizure();
-    if (ordre == 1)
-    {
-        printf("Vous avez choisi la 1er methode de saisie \n");
-        methode1(s);
-    }
-    else if (ordre == 2)
-    {
-        printf("Vous avez choisi la 2eme methode de saisie \n");
-        methode2(s);
-    }
-    else if (ordre == 0)
-    {
-        printf("saisie ANNULE\n");
-    }
-}
-/*fonction fais parti de la fonction askSylo pour la demande de saisie d'un syllogisme*/
-int askOrderSeizure()
-{
-    printf("Quel est l'ordre de saisie du syllogisme choisi , Ordre : 1 avec 7 demandes ou 2 avec 9 demandes mais dans l'ordre de lecture du syllogisme\n");
-    printf("Veuillez entrer le nombre entier 1 ou 2 ou 0 pour annule la saisie\n");
-    int ordre = -1;
-    int res = scanf("%d", &ordre);
-    if (res == 1 && (ordre == 1 || ordre == 2 || ordre == 0))
-    {
-        return ordre;
-    }
-    else if (res != 1)
-    {
-        printf("Erreur  ");
-    }
-    else
-    {
-        printf("La saisie n'est pas VALIDE\n");
-        return askOrderSeizure();
-    }
-}
-/*fonction qui initialise un Syllogisme */
-Syllogysme *initSyllo()
-{
-    Syllogysme *s = malloc(sizeof(Syllogysme));
+    syllogisme *s = malloc(sizeof(syllogisme));
+    int taille = 50;
+    s->quant1 = malloc(taille * sizeof(char));
+    s->quant2 = malloc(taille * sizeof(char));
+    s->quant3 = malloc(taille * sizeof(char));
+    s->sujet = malloc(taille * sizeof(char));
+    s->predicat = malloc(taille * sizeof(char));
+    s->moyenTerme = malloc(taille * sizeof(char));
+    /*
+    s->U1 = true;
+    s->U2 = true;
+    s->Uc = true;
+    s->A1 = true;
+    s->A2 = true;
+    s->Ac = true;
+    s->S = true;
+    s->P = true;
+    */
+    s->figure = 0;
+    s->quant1[0] = '\0';
+    s->quant2[0] = '\0';
+    s->quant3[0] = '\0';
+    s->sujet[0] = '\0';
+    s->predicat[0] = '\0';
+    s->moyenTerme[0] = '\0';
     return s;
 }
-void freeSyllo(Syllogysme *s)
+/*fonction qui free un syllogisme */
+void freeSyllo(syllogisme *s)
 {
+    free(s->quant1);
+    free(s->quant2);
+    free(s->quant3);
+    free(s->sujet);
+    free(s->predicat);
+    free(s->moyenTerme);
     free(s);
 }
-/* fonction de saisie pour la methode 1*/
-void methode1(Syllogysme *s)
-{
-    printf("Etape (1 / 7) :\n");
-    printf("1er quant\n");
-    askQuantificateur(s, 1);
-    printf("Etape (2 / 7) :\n");
-    printf("2eme quant\n");
-    askQuantificateur(s, 2);
-    printf("Etape (3 / 7) :\n");
-    printf("3eme quant\n");
-    askQuantificateur(s, 3);
-    printf("Etape (4 / 7) :\n");
-    printf("sujet\n");
-    strcpy(s->sujet, scanfNom("sujet"));
-    printf("Etape (5 / 7) :\n");
-    printf("predicat\n");
-    strcpy(s->predicat, scanfNom("predicat"));
-    printf("Etape (6 / 7) :\n");
-    printf("moyen terme\n");
-    strcpy(s->moyenTerme, scanfNom("moyen terme"));
-    printf("Etape (7 / 7) :\n");
-    printf("Type de la figure\n");
-    scanfTypeFigure(s);
-    printSyll(s);
-}
-/* fonction de saisie pour la methode 2*/
-void methode2(Syllogysme *s)
-{
-    printf("Etape (1 / 9) :\n");
-    printf("1er quant\n");
-    askQuantificateur(s, 1);
-    printf("Etape (2 / 9) :\n");
-    char sujet1[50];
-    strcpy(sujet1, scanfNom("sujet"));
-    printf("Etape (3 / 9) :\n");
-    char predicat1[50];
-    strcpy(predicat1, scanfNom("predicat"));
-    printf("Etape (4 / 9) :\n");
-    printf("2eme quant\n");
-    askQuantificateur(s, 2);
-    printf("Etape (5 / 9) :\n");
-    char sujet2[50];
 
-    strcpy(sujet2, demande1(sujet1, predicat1, s));
-    if (strcmp(sujet2, "") == 0)
+/*fonction qui affiche un syllogisme*/
+
+void printSyllo(syllogisme *s)
+{
+    printf("Affichage du Syllogisme :\n");
+    if (s->figure == 0)
     {
-        printf("ERREUR");
+        printf("Le syllogisme n'est pas construit\n");
     }
     else
     {
-        if (strcmp(sujet2, sujet1) == 0)
+        if (s->figure == 1)
         {
-            strcpy(s->moyenTerme, sujet1);
-            strcpy(s->predicat, predicat1);
+            printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->moyenTerme, s->predicat, s->quant2, s->sujet, s->moyenTerme, s->quant3, s->sujet, s->predicat);
         }
-        else if (strcmp(sujet2, predicat1) == 0)
+        else if (s->figure == 2)
         {
-            strcpy(s->predicat, sujet1);
-            strcpy(s->moyenTerme, predicat1);
+            printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->predicat, s->moyenTerme, s->quant2, s->sujet, s->moyenTerme, s->quant3, s->sujet, s->predicat);
         }
-        else
+        else if (s->figure == 3)
         {
-            strcpy(s->sujet, sujet2);
+            printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->moyenTerme, s->predicat, s->quant2, s->moyenTerme, s->sujet, s->quant3, s->sujet, s->predicat);
         }
+        else if (s->figure == 4)
+        {
+            printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->predicat, s->moyenTerme, s->quant2, s->moyenTerme, s->sujet, s->quant3, s->sujet, s->predicat);
+        }
+        printf("U1 : %d ,U2 : %d ,Uc : %d ,A1 : %d ,A2 : %d ,Ac : %d ,S : %d ,P : %d\n", s->U1, s->U2, s->Uc, s->A1, s->A2, s->Ac, s->S, s->P);
+        printf("Le sujet est < %s > , le predicat est < %s > , le moyen terme est < %s > \n", s->sujet, s->predicat, s->moyenTerme);
     }
-
-    if (strcmp(s->sujet, "") == 0)
-    {
-        printf("Etape (6 / 9) :\n");
-        strcpy(s->sujet, scanfNom("predicat de la 2eme proposition"));
-    }
-
-    printf("Etape (7 / 9) :\n");
-    printf("quantificateur de la conclusion\n");
-    askQuantificateur(s, 3);
-    /*
-    printf("Etape (8 / 9) :\n");
-    demande2(s);
-    */
-    printf("Etape (9 / 9) :\n");
-
-    printSyll(s);
 }
-/*focntion qui demande a l'utilisateur si le sujet de la deuxime
-proposition est le sujet ou le predicat de la premiere
-si oui pas de saisie de */
-char *demande1(char *s1, char *s2, Syllogysme *s)
+
+/*fonction Saisie d'un Syllogisme*/
+
+/*fonction qui demande un entier a l'utilisateur de 0 a un entier positif max,
+si une chaine de carac ou autre qu'un nb est rentré on vide le buffer  */
+int askInt(int max)
 {
-    printf("le sujet de la deuxieme premisse est : \"%s\" , \"%s\" ou autre :\n", s1, s2);
-    printf("- 0 pour annule la saisie\n");
-    printf("- 1 pour %s\n", s1);
-    printf("- 2 pour %s\n", s2);
-    printf("- 3 pour la saisie du sujet\n");
     int a;
-    int ret = scanf("%d", &a);
-    char *res;
-    strcpy(res, "");
-    if (ret != 1)
+    int ret;
+    do
     {
-        printf("Erreur\n");
-    }
-    else
+        printf("Entre le nombre entre 0 et %d\n", max);
+        ret = scanf("%d", &a);
+        if (ret != 1)
+        {
+            int c = 0;
+            while (c != '\n')
+            {
+                c = getchar();
+            }
+            printf("Il faut rentrer un nombre\n");
+        }
+    } while (!(0 <= a && a <= max) || ret != 1);
+    return a;
+}
+
+/*fonction qui demande une chaine de caractere a l'utilisateur , elle doit finir par <!> pour finir la saisie*/
+char *askString()
+{
+    int taille = 50;
+    char *res = malloc(taille * sizeof(char));
+    res[0] = '\0';
+    bool s = true;
+    int size = 0;
+    while (s)
     {
-        if (a == 0)
+        char tmp[100];
+        scanf("%s", &tmp);
+        if (strcmp(tmp, "!") == 0)
         {
-            printf("FIN DE LA SAISIE\n");
-        }
-        else if (a == 1)
-        {
-            s->figure = 3;
-            s->S = false;
-            s->P = true;
-            strcpy(res, s1);
-        }
-        else if (a == 2)
-        {
-            s->figure = 4;
-            s->S = false;
-            s->P = false;
-            strcpy(res, s2);
-        }
-        else if (a == 3)
-        {
-            printf("fais\n");
-            strcpy(res, scanfNom("sujet"));
-            demande1_bis(s1, s2, s);
+            s = false;
         }
         else
         {
-            printf("La saisie n'est pas VALIDE\n");
-            demande1(s1, s2, s);
+            size += strlen(tmp) + 1;
+            if (size > taille)
+            {
+                taille *= 2;
+                res = realloc(res, taille * sizeof(char));
+            }
+            strcat(res, tmp);
+            strcat(res, " ");
         }
+    }
+    int size_res = strlen(res);
+    if (size_res > 0 && res[size_res - 1] == ' ')
+    {
+        res[size_res - 1] = '\0';
     }
     return res;
 }
 
-void demande1_bis(char *s1, char *s2, Syllogysme *s)
+/*fonction qui ajoute ou non des chaines de caractere dans les 4 liste donnes */
+void changeList(quantificateurs *a, quantificateurs *b, quantificateurs *c, quantificateurs *d)
 {
-    printf("Etape (6 / 9) :\n");
-    printf("le predicat de la deuxieme premisse est-il sujet ou predicat de la premiere premisse ? \n");
-    printf("- 1 il est le sujet : %s\n", s1);
-    printf("- 2 il est le predicat : %s\n", s2);
-    printf("- 0 pour annule la saisie\n");
-    int a;
-    int ret = scanf("%d", &a);
-    if (ret != 1)
+    printf("Avant de commencer voici la liste des Quantificateurs possible\n");
+    printf("************  Universelles  ************\n");
+    printListQuant2(a);
+    printf("************  Universelles Negative  ************\n");
+    printListQuant2(b);
+    printf("************  existentielles  ************\n");
+    printListQuant2(c);
+    printf("************  existentielles Negative  ************\n");
+    printListQuant2(d);
+    bool s = true;
+    while (s)
     {
-        printf("Erreur\n");
-    }
-    else
-    {
-        if (a == 1)
+        printf("Voulez-vous ajouter des quantificateurs ? \n");
+        printf("si oui tapez <1> , sinon tapez <0>\n");
+        int v = askInt(1);
+        if (v == 1)
         {
-            s->figure = 1;
-            s->S = true;
-            s->P = true;
-            strcpy(s->moyenTerme, s1);
-            strcpy(s->predicat, s2);
-        }
-        else if (a == 2)
-        {
-            s->figure = 2;
-            s->S = true;
-            s->P = false;
-            strcpy(s->moyenTerme, s2);
-            strcpy(s->predicat, s1);
-        }
-        else if (a == 0)
-        {
-            printf("FIN DE LA SAISIE\n");
+            printf("A quel liste voulez-vous ajouter un quantificateur? \n");
+            printf("<0> pour annule la saisie\n");
+            printf("<1> pour Universelles\n");
+            printf("<2> pour Universelles Negatives\n");
+            printf("<3> pour Existentielles\n");
+            printf("<4> pour Existentielles Negatives\n");
+            int i = askInt(4);
+            if (i >= 0 && i <= 4)
+            {
+                if (i == 0)
+                {
+                    printf("Vous-avez annule la saisie !!!!!!!!\n");
+                    exit(0);
+                }
+                else
+                {
+                    printf("tapez le quantificateur (<!> pour stoper la saisie): ");
+                    char *my = askString();
+                    printf("Vous avez saisie le Quantificateur < %s > ", my);
+
+                    if (i == 1)
+                    {
+                        addListQuant(a, my);
+                        printf("dans Universelles\n");
+                    }
+                    else if (i == 2)
+                    {
+                        addListQuant(b, my);
+                        printf("dans Universelles Negatives\n");
+                    }
+                    else if (i == 3)
+                    {
+                        addListQuant(c, my);
+                        printf("dans Existentielles\n");
+                    }
+                    else
+                    {
+                        addListQuant(d, my);
+                        printf("dans Existentielles Negatives\n");
+                    }
+                    free(my);
+                }
+            }
+            else
+            {
+                exit(EXIT_FAILURE);
+            }
         }
         else
         {
-            printf("La saisie n'est pas VALIDE\n");
-            demande1_bis(s1, s2, s);
+            s = false;
         }
     }
 }
 
-void demande2(Syllogysme *s)
+void saisie(quantificateurs *a, quantificateurs *b, quantificateurs *c, quantificateurs *d, syllogisme *s)
 {
-    printf("le sujet de la conclusion est le sujet de la 2eme premisse ou le predicat de la 2eme premisse \n");
-    printf("- 0 pour annule la saisie\n");
-    printf("- 1 le sujet est sujet dans la 2eme premisse\n");
-    printf("- 2 le sujet est le predicat de la 2eme premisse\n");
-    int a;
-    int ret = scanf("%d", &a);
-    if (ret != 1)
+    printf("***** Debut de la saisie du syllogisme *****\n");
+    printf("Choisisez le mode de saisie : \n");
+    printf("<1> mode 1 \n");
+    printf("<2> mode 2 \n");
+    int i = askInt(2);
+    if (i == 1)
     {
-        printf("Erreur\n");
+        mode1(a, b, c, d, s);
+    }
+    else if (i == 2)
+    {
+        mode2(a, b, c, d, s);
+    }
+    else if (i == 0)
+    {
+        printf("Vous-avez annule la saisie !!!!!!!!\n");
+        exit(0);
     }
     else
     {
-        if (a == 1)
+        exit(EXIT_FAILURE);
+    }
+}
+
+/* fonction de saisie pour la methode 1*/
+void mode1(quantificateurs *a, quantificateurs *b, quantificateurs *c, quantificateurs *d, syllogisme *s)
+{
+    printf("Vous-avez choisi le mode 1\n");
+    printf("Etape (1 / 7) :\n");
+    printf("Entre le premier quantificateur du syllogisme\n");
+    askQuant(a, b, c, d, s, 1);
+    printf("Etape (2 / 7) :\n");
+    printf("Entre le deuxieme quantificateur du syllogisme\n");
+    askQuant(a, b, c, d, s, 2);
+    printf("Etape (3 / 7) :\n");
+    printf("Entre le troixieme quantificateur du syllogisme\n");
+    askQuant(a, b, c, d, s, 3);
+    printf("Etape (4 / 7) :\n");
+    printf("Entre le sujet du syllogisme\n");
+    char *sujet = askString();
+    s->sujet = realloc(s->sujet, (strlen(sujet) + 1) * sizeof(char));
+    strcpy(s->sujet, sujet);
+    free(sujet);
+    printf("Etape (5 / 7) :\n");
+    printf("Entre le predicat du syllogisme\n");
+    char *predicat = askString();
+    s->predicat = realloc(s->predicat, (strlen(predicat) + 1) * sizeof(char));
+    strcpy(s->predicat, predicat);
+    free(predicat);
+    printf("Etape (6 / 7) :\n");
+    printf("Entre le moyen terme du syllogisme\n");
+    char *moyenTerme = askString();
+    s->moyenTerme = realloc(s->moyenTerme, (strlen(moyenTerme) + 1) * sizeof(char));
+    strcpy(s->moyenTerme, moyenTerme);
+    free(moyenTerme);
+    printf("Etape (7 / 7) :\n");
+    scanfTypeFigure(s);
+    printSyllo(s);
+}
+
+void mode2(quantificateurs *a, quantificateurs *b, quantificateurs *c, quantificateurs *d, syllogisme *s)
+{
+    printf("Vous-avez choisi le mode 2\n");
+    printf("Etape (1 / 9) :\n");
+    printf("Entre le quantificateur de la premiere premisse du syllogisme\n");
+    askQuant(a, b, c, d, s, 1);
+    printf("Etape (2 / 9) :\n");
+    printf("Entre le sujet de la premiere premisse du syllogisme\n");
+    char *sujet = askString();
+    printf("Etape (3 / 9) :\n");
+    printf("Entre le predicat de la premiere premisse du syllogisme\n");
+    char *predicat = askString();
+    printf("Etape (4 / 9) :\n");
+    printf("Entre le quantificateur de la deuxieme premisse du syllogisme\n");
+    askQuant(a, b, c, d, s, 2);
+    printf("Etape (5 / 9) :\n");
+    bool booll = mode2_1(s);
+    printf("Etape (6 / 9) :\n");
+    if (booll)
+    {
+        printf("Entre le predicat de la deuxieme premisse du syllogisme\n");
+        char *predicat2 = askString();
+        s->sujet = realloc(s->sujet, (strlen(predicat2) + 1) * sizeof(char));
+        strcpy(s->sujet, predicat2);
+        free(predicat2);
+    }
+    else
+    {
+        mode2_2(s);
+    }
+    printf("Etape (7 / 9) :\n");
+    printf("Entre le quantificateur de la conclusion du syllogisme\n");
+    askQuant(a, b, c, d, s, 3);
+    printf("Etape (8 / 9) :\n");
+    mode2_3(s);
+    printf("Etape (9 / 9) :\n");
+    printf("Le sujet de la conclusion est < %s >\n", s->sujet);
+    printf("Par deduction le predicat de la conclusion est < %s >\n", s->predicat);
+
+    detSyllo(sujet, predicat, s);
+
+    printSyllo(s);
+
+    free(sujet);
+    free(predicat);
+}
+
+bool mode2_1(syllogisme *s)
+{
+    printf("Le sujet de la deuxieme premisse est :\n");
+    printf("<0> pour annule la saisie\n");
+    printf("<1> le sujet de la premiere premisse\n");
+    printf("<2> le predicat de la premiere premisse\n");
+    printf("<3> aucun des deux \n");
+    int i = askInt(3);
+    bool sorti = true;
+    if (i == 0)
+    {
+        printf("Vous-avez annule la saisie !!!!!!!!\n");
+        exit(0);
+    }
+    else
+    {
+        if (i == 1)
+        {
+            s->P = true;
+        }
+        else if (i == 2)
+        {
+            s->P = false;
+        }
+        else if (i == 3)
+        {
+            printf("Entre le sujet de la deuxieme premisse du syllogisme\n");
+            char *chaine = askString();
+            s->sujet = realloc(s->sujet, (strlen(chaine) + 1) * sizeof(char));
+            strcpy(s->sujet, chaine);
+            free(chaine);
+            sorti = false;
+        }
+        else
+        {
+            exit(EXIT_FAILURE);
+        }
+    }
+    return sorti;
+}
+
+void mode2_2(syllogisme *s)
+{
+    printf("Le predicat de la deuxieme premisse du syllogisme est :\n");
+    printf("<0> pour annule la saisie\n");
+    printf("<1> le sujet de la premiere premisse\n");
+    printf("<2> le predicat de la premiere premisse\n");
+    int i = askInt(2);
+    if (i == 0)
+    {
+        printf("Vous-avez annule la saisie !!!!!!!!\n");
+        exit(0);
+    }
+    else
+    {
+        if (i == 1)
+        {
+            s->P = true;
+        }
+        else if (i == 2)
+        {
+            s->P = false;
+        }
+        else
+        {
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
+void mode2_3(syllogisme *s)
+{
+    printf("Le sujet de la conclusion du syllogisme est :\n");
+    printf("<0> pour annule la saisie\n");
+    printf("<1> le sujet de la deuxieme premisse\n");
+    printf("<2> le predicat de la deuxieme premisse\n");
+    int i = askInt(2);
+    if (i == 0)
+    {
+        printf("Vous-avez annule la saisie !!!!!!!!\n");
+        exit(0);
+    }
+    else
+    {
+        if (i == 1)
         {
             s->S = true;
         }
-        else if (a == 2)
+        else if (i == 2)
         {
             s->S = false;
         }
         else
         {
-            printf("La saisie n'est pas VALIDE\n");
-            demande2(s);
+            exit(EXIT_FAILURE);
         }
     }
 }
-
-/*Fonction qui affiche un syllogisme en fonction du type de figure */
-void printSyll(Syllogysme *s)
+/*fonction qui determine la figure d'un syllogisme avec les 2 bool s.S et s.P */
+void detSyllo(char *s1, char *p1, syllogisme *s)
 {
-    printf("Affichage du Syllogisme :\n");
-    if (s->figure == 1)
+    if (s->P)
     {
-        printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->moyenTerme, s->predicat, s->quant2, s->sujet, s->moyenTerme, s->quant3, s->sujet, s->predicat);
-    }
-    else if (s->figure == 2)
-    {
-        printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->predicat, s->moyenTerme, s->quant2, s->sujet, s->moyenTerme, s->quant3, s->sujet, s->predicat);
-    }
-    else if (s->figure == 3)
-    {
-        printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->moyenTerme, s->predicat, s->quant2, s->moyenTerme, s->sujet, s->quant3, s->sujet, s->predicat);
-    }
-    else if (s->figure == 4)
-    {
-        printf("Figure : %d\n%s %s %s , %s %s %s , %s %s %s\n", s->figure, s->quant1, s->predicat, s->moyenTerme, s->quant2, s->moyenTerme, s->sujet, s->quant3, s->sujet, s->predicat);
-    }
-    printf("U1 : %d ,U2 : %d ,Uc : %d ,A1 : %d ,A2 : %d ,Ac : %d ,S : %d ,P : %d\n", s->U1, s->U2, s->Uc, s->A1, s->A2, s->Ac, s->S, s->P);
-    printf("Le sujet est \"%s\" , le predicat est \"%s\" , le moyen terme est \"%s\" \n", s->sujet, s->predicat, s->moyenTerme);
-}
-
-/*fonction qui prend en param le nom : soit le sujet , soit le predicat , soit le moyen terme ( juste pour l'affichage)
-et un entier val avec trois valeur possible 1 , 2 ou 3 respectivement sujet , predicat , moyen terme */
-char *scanfNom(char *nom)
-{
-    printf("Donner le %s du syllogisme , Attention 50 caractere MAX sinon ERREUR\n", nom);
-    printf("!!!!!!!!!!!! <  #  > pour arrete la saisie !!!!!!!!!!!!!!!\n");
-    char *sujet;
-    strcpy(sujet, "");
-    bool sorti = true;
-    while (sorti)
-    {
-        char compare[50];
-        scanf("%s", &compare);
-        if (strcmp(compare, "#") == 0)
+        if (s->S)
         {
-            sorti = false;
+            s->figure = 1;
         }
         else
         {
-            strcat(sujet, compare);
-            strcat(sujet, " ");
+            s->figure = 3;
         }
+        s->moyenTerme = realloc(s->moyenTerme, (strlen(s1) + 1) * sizeof(char));
+        strcpy(s->moyenTerme, s1);
+        s->predicat = realloc(s->predicat, (strlen(p1) + 1) * sizeof(char));
+        strcpy(s->predicat, p1);
     }
-    printf("le %s : %s\n", nom, sujet);
-    return sujet;
+    else
+    {
+        if (s->S)
+        {
+            s->figure = 2;
+        }
+        else
+        {
+            s->figure = 4;
+        }
+        s->predicat = realloc(s->predicat, (strlen(s1) + 1) * sizeof(char));
+        strcpy(s->predicat, s1);
+        s->moyenTerme = realloc(s->moyenTerme, (strlen(p1) + 1) * sizeof(char));
+        strcpy(s->moyenTerme, p1);
+    }
 }
+
+/*fonction qui demande a l'utilisateur quel type de quntificateur il choisi
+- 0 pour annule la saisie
+- 1 quantificateur universelles
+- 2 quantificateur universelles negatif
+- 3 quantificateur existentielles
+- 4 quantificateur existentielles negatif
+*/
+void askQuant(quantificateurs *a, quantificateurs *b, quantificateurs *c, quantificateurs *d, syllogisme *s, int num)
+{
+    printf("Quel type de quantificateur :\n");
+    printf("<0> ANNULE LA SAISIE\n");
+    printf("<1> universelle \n");
+    printf("<2> universelle negatif \n");
+    printf("<3> existentielle \n");
+    printf("<4> existentielle negatif \n");
+    int i = askInt(4);
+    char *chaine;
+    bool U, A;
+    if (i == 0)
+    {
+        printf("Vous-avez annule la saisie !!!!!!!!\n");
+        exit(0);
+    }
+    else if (i == 1)
+    {
+        printf("Liste quantifications universelles\n");
+        printListQuant(a);
+        chaine = getListQuant(a);
+        U = a->U;
+        A = a->A;
+    }
+    else if (i == 2)
+    {
+        printf("Liste quantifications universelles negative\n");
+        printListQuant(b);
+        chaine = getListQuant(b);
+        U = b->U;
+        A = b->A;
+    }
+    else if (i == 3)
+    {
+        printf("Liste quantifications existentielles\n");
+        printListQuant(c);
+        chaine = getListQuant(c);
+        U = c->U;
+        A = c->A;
+    }
+    else if (i == 4)
+    {
+        printf("Liste quantifications existentielles negative\n");
+        printListQuant(d);
+        chaine = getListQuant(d);
+        U = d->U;
+        A = d->A;
+    }
+    else
+    {
+        exit(EXIT_FAILURE);
+    }
+    if (num == 1)
+    {
+        s->U1 = U;
+        s->A1 = A;
+        strcpy(s->quant1, chaine);
+    }
+    else if (num == 2)
+    {
+        s->U2 = U;
+        s->A2 = A;
+        strcpy(s->quant2, chaine);
+    }
+    else if (num == 3)
+    {
+        s->Uc = U;
+        s->Ac = A;
+        strcpy(s->quant3, chaine);
+    }
+    else
+    {
+        exit(EXIT_FAILURE);
+    }
+}
+
+char *getListQuant(quantificateurs *list)
+{
+    int i = askInt(list->size - 1);
+    printf("Vous avez choisi le quantificateur : %s \n", list->l[i]);
+    return list->l[i];
+}
+
 /*fonction qui fais la demande du type de figure choisi
 - 0 pour annule la saisie
 - 1,2,3,4 pour la figure choisie*/
-void scanfTypeFigure(Syllogysme *s)
+void scanfTypeFigure(syllogisme *s)
 {
     printf(" ------------       ------------       ------------       ------------ \n");
     printf("|  Figure 1  |     |  Figure 2  |     |  Figure 3  |     |  Figure 4  |\n");
@@ -370,11 +558,19 @@ void scanfTypeFigure(Syllogysme *s)
     printf("| S   ->   P |     | S   ->   P |     | S   ->   P |     | S   ->   P |\n");
     printf(" ------------       ------------       ------------       ------------ \n");
 
-    printf("Quel est le numero de la figure du syllogisme : 1 , 2 , 3 ou 4 \n");
-    printf("0 pour annule la saisie\n");
-    int val;
-    int res = scanf("%d", &val);
-    if (res == 1 && val >= 0 && val <= 4)
+    printf("Quel est le numero de la figure du syllogisme:\n");
+    printf("<0> pour annule la saisie\n");
+    printf("<1> figure\n");
+    printf("<2> figure\n");
+    printf("<3> figure\n");
+    printf("<4> figure\n");
+    int val = askInt(4);
+    if (val == 0)
+    {
+        printf("Vous-avez annule la saisie !!!!!!!!\n");
+        exit(0);
+    }
+    else
     {
         printf("Vous avez choisi la figure %d\n", val);
         s->figure = val;
@@ -398,132 +594,9 @@ void scanfTypeFigure(Syllogysme *s)
             s->P = false;
             s->S = false;
         }
-        else if (val == 0)
-        {
-            printf("Saisie ANNULE");
-        }
-    }
-    else if (res != 1)
-    {
-        printf("Erreur\n");
-    }
-    else
-    {
-        printf("La saisie n'est pas VALIDE\n");
-        scanfTypeFigure(s);
-    }
-}
-/*fonction qui demande a l'utilisateur quel type de quntificateur il choisi
-- 0 pour annule la saisie
-- 1 quantificateur existencielles
-- 2 quantificateur universelles
-- 3 quantificateur universelles negatif
-- 4 quantificateur existencielles negatif
-*/
-void askQuantificateur(Syllogysme *s, int valQuant)
-{
-    printf("Quel type de quantificateur : 1 existentielle , 2 universelle , 3 universelle negatif , 4 existentielle negatif ou 0 pour annule la saisie \n");
-    printf("Veuillez entrer le nombre entier 1, 2, 3, 4 ou 0 pour annule la saisie\n");
-    int val = -1;
-    int res = scanf("%d", &val);
-    char *chaine;
-    bool a, b;
-    if (res == 1)
-    {
-        if (val == 1)
-        {
-            printf("Liste quantifications existentielles\n");
-            printList(list_quant_existentielles, size_quant_existentielles);
-            chaine = scanfList(list_quant_existentielles, size_quant_existentielles);
-            a = false;
-            b = true;
-        }
-        else if (val == 2)
-        {
-            printf("Liste quantifications universelles\n");
-            printList(list_quant_universelles, size_quant_universelles);
-            chaine = scanfList(list_quant_universelles, size_quant_universelles);
-            a = true;
-            b = true;
-        }
-        else if (val == 3)
-        {
-            printf("Liste quantifications universelles negative\n");
-            printList(list_quant_universelles_negatif, size_quant_universelles_negatif);
-            chaine = scanfList(list_quant_universelles_negatif, size_quant_universelles_negatif);
-            a = true;
-            b = false;
-        }
-        else if (val == 4)
-        {
-            printf("Liste quantifications existentielles negative\n");
-            printList(list_quant_existentielles_negatif, size_quant_existentielles_negatif);
-            chaine = scanfList(list_quant_existentielles_negatif, size_quant_existentielles_negatif);
-            a = false;
-            b = false;
-        }
-        else if (val == 0)
-        {
-            printf("saisie ANNULE\n");
-        }
         else
         {
-            printf("La saisie n'est pas VALIDE\n");
-            askQuantificateur(s, valQuant);
+            exit(EXIT_FAILURE);
         }
-        if (val >= 1 && val <= 4)
-        {
-            if (valQuant == 1)
-            {
-                s->U1 = a;
-                s->A1 = b;
-                strcpy(s->quant1, chaine);
-            }
-            else if (valQuant == 2)
-            {
-                s->U2 = a;
-                s->A2 = b;
-                strcpy(s->quant2, chaine);
-            }
-            else if (valQuant == 3)
-            {
-                s->Uc = a;
-                s->Ac = b;
-                strcpy(s->quant3, chaine);
-            }
-        }
-    }
-    else
-    {
-        printf("Erreur");
-    }
-}
-/*fonction qui revoie une chaine de carractere choisi en fonction d'un liste donner et de sa taille en demandant un chiffre valide a l'utilisateur  */
-char *scanfList(char **list, int size)
-{
-    printf("Entre un chiffre entre O et %d\n", size - 1);
-    int val;
-    int res = scanf("%d", &val);
-    if (res == 1 && val >= 0 && val < size)
-    {
-        printf("Vous avez choisi le quantificateur : %s \n", list[val]);
-        return list[val];
-    }
-    else if (res != 1)
-    {
-        printf("Erreur");
-    }
-    else
-    {
-        printf("La saisie n'est pas VALIDE\n");
-        return scanfList(list, size);
-    }
-}
-/*fonction qui affiche une liste donner en param avec la taille de la liste */
-void printList(char **list, int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        printf("%3d :  %s\n", i, list[i]);
     }
 }
