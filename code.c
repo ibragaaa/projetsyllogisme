@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "syllo.h"
+#include "syllogisme.h"
 
 #include <string.h>
 
