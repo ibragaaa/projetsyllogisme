@@ -1,16 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
 #include "valid_syllo.h"
 
 void validSyllo(syllogisme *s)
 {
-    bool Rmt, Rlh, Rnn, Rn, Raa, Rpp, Rp, Ruu ;
-    Rnn = regle_Rnn(s);
-    Rn = regle_Rn(s);
+    bool Rmt, Rlh, Rnn, Rn, Raa, Rpp, Rp, Ruu;
+    Rnn = regle_Rnn(s); // si faux aret prog
+    if (Rnn)
+    {
+        Rn = regle_Rn(s);
+        Raa = regle_Raa(s);
+    }
 
-    if (Rmt && Rlh && Rnn && Rn && Raa && Rpp && Rp && Ruu)
+    if (Rnn && Rn)
     {
         printf("Syllogisme VALIDE \n");
     }
@@ -27,11 +30,11 @@ bool regle_Rnn(syllogisme *s)
     {
         if (s->A1)
         {
-            printf("Rnn. La première prémisse est affirmative, donc Rnn est vérifiée.\n");
+            printf("Rnn. La premiere premisse est affirmative, donc Rnn est verifiee.\n");
         }
         else if (s->A2)
         {
-            printf("Rnn. La deuxième prémisse est affirmative, donc Rnn est vérifiée.\n");
+            printf("Rnn. La deuxieme premisse est affirmative, donc Rnn est verifiee.\n");
         }
         return true;
     }
@@ -45,28 +48,49 @@ bool regle_Rnn(syllogisme *s)
 bool regle_Rn(syllogisme *s)
 {
     //  Rn : si une prémisse est négative, la conclusion est négative.
-    if ((!s->A1 || !s->A2) && !s->Ac)
+    if (!s->Ac)
     {
-        return true;
-    }
-    else
-    {
-        if (!s->A1 || !s->A2)
+        if (s->A1 && s->A2)
         {
-            if (!s->A1)
-            {
-                printf("A1 est negatif et A2 est positif");
-            }
-            if (!s->A2)
-            {
-                printf("A2 est negatif et A1 est positif");
-            }
-            printf(" donc la conclusion doit etre negative\n");
+            printf("Rn. Les deux premisses sont positive et la conclusion est negative, donc Rnn n'est pas verifiee.\n");
+            return false;
         }
         else
         {
-            printf("A1 et A2 ne sont pas des premisses negatives donc la conclusion ne peut pas etre negative\n");
+            if (s->A1)
+            {
+                printf("Rn. La deuxieme premisse est negative et la conclusion est negative, donc Rnn est verifiee.\n");
+            }
+            else if (s->A2)
+            {
+                printf("Rn. La premiere premisse est negative et la conclusion est negative, donc Rnn est verifiee.\n");
+            }
+            return true;
         }
-        return false;
+    }
+}
+
+bool regle_Raa(syllogisme *s)
+{
+    //  Raa : deux prémisses affirmatives donnent une conclusion affirmative.
+    if (s->Ac)
+    {
+        if (s->A1 && s->A2)
+        {
+            printf("Rn. Les deux premisses sont pisitive et la conclusion l'est aussi, donc Rnn est verifiee.\n");
+            return true;
+        }
+        else
+        {
+            if (s->A1)
+            {
+                printf("Rn. La deuxieme premisse est negative et la conclusion est positive, donc Rnn n'est pas verifiee.\n");
+            }
+            else if (s->A2)
+            {
+                printf("Rn. La premiere premisse est negative et la conclusion est positive, donc Rnn n'est pas verifiee.\n");
+            }
+            return false;
+        }
     }
 }
