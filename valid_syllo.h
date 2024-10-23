@@ -9,5 +9,7 @@ bool regle_Rn(syllogisme *s);
 bool regle_Raa(syllogisme *s);
 bool regle_Rpp(syllogisme *s);
 bool regle_Rp(syllogisme *s);
+bool regle_Rmt(syllogisme *s);
+bool regle_Rlh(syllogisme *s);
 
 #endif
