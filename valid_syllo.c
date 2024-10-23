@@ -77,7 +77,7 @@ bool regle_Raa(syllogisme *s)
     {
         if (s->A1 && s->A2)
         {
-            printf("Rn. Les deux premisses sont pisitive et la conclusion l'est aussi, donc Rnn est verifiee.\n");
+            printf("Rn. Les deux premisses sont positive et la conclusion l'est aussi, donc Rnn est verifiee.\n");
             return true;
         }
         else
@@ -92,5 +92,27 @@ bool regle_Raa(syllogisme *s)
             }
             return false;
         }
+    }
+}
+
+bool regle_Rpp(syllogisme *s)
+{
+    // Rpp : deux prémisses particulières ne donnent pas de conclusion.
+    if (s->U1 || s->U2)
+    {
+        if (s->U1)
+        {
+            printf("Rpp. Le syllogisme n’a qu’une premisse particuliere (la seconde) donc Rpp est verifiee. \n");
+        }
+        if (s->U2)
+        {
+            printf("Rpp. Le syllogisme n’a qu’une premisse particuliere (la premiere) donc Rpp est verifiee. \n");
+        }
+        return true;
+    }
+    else
+    {
+        printf("Rpp. Le syllogisme a deux premisse particuliere donc Rpp n'est pas verifiee. \n");
+        return false;
     }
 }
