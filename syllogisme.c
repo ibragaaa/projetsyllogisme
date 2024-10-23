@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "syllogisme.h"
+#include "saisi_syllo.h"
 
 /*fonction qui initialise un syllogisme */
 syllogisme *initSyllo()
