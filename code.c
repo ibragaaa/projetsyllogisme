@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "syllogisme.h"
+#include "saisi_syllo.h"
+#include "valid_syllo.h"
 
 #include <string.h>
 
@@ -50,10 +51,22 @@ int main()
     syllogisme *s = initSyllo();
 
     /*changer les listes */
-    changeList(universelle, universelle_negatif, existentielle, existentielle_negatif);
+    // changeList(universelle, universelle_negatif, existentielle, existentielle_negatif);
 
     /*Saisie du Syllogisme*/
-    saisie(universelle, universelle_negatif, existentielle, existentielle_negatif, s);
+    // saisie(universelle, universelle_negatif, existentielle, existentielle_negatif, s);
+
+    /*Valid ou pas un Syllogisme*/
+    // test
+    s->U1 = true;
+    s->U2 = true;
+    s->Uc = true;
+    s->A1 = true;
+    s->A2 = true;
+    s->Ac = true;
+    s->S = true;
+    s->P = true;
+    validSyllo(s);
 
     /*destruction du Syllogisme*/
     freeSyllo(s);
