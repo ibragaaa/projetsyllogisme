@@ -1,5 +1,5 @@
-#ifndef SYLLOGISME_H
-#define SYLLOGISME_H
+#ifndef SAISI_SYLLO_H
+#define SAISI_SYLLO_H
 
 #include "listQuant.h"
 #include <stdbool.h>
