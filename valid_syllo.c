@@ -95,6 +95,46 @@ bool regle_Raa(syllogisme *s)
     }
 }
 
+bool regle_Rp(syllogisme *s)
+{
+    //  Rp : si une prémisse est particulière la conclusion est particulière.
+    if(!s->Uc)
+    {
+            if(!s->U1)
+            {
+                printf("Rp. La premiere premisse est particuliere et la conclusion est particuliere, donc Rp est verifiee.\n");
+                return true;
+            }
+            else if(!s->U2)
+            {
+                printf("Rp. La seconde premisse est particuliere et la conclusion est particuliere, donc Rp est verifiee.\n");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+    }
+    else
+    {
+         if(!s->U1)
+            {
+                printf("Rp. La premiere premisse est particuliere et la conclusion est particuliere, donc Rp n'est pas verifiee.\n");
+                return false;
+            }
+            else if(!s->U2)
+            {
+                printf("Rp. La seconde premisse est particuliere et la conclusion est particuliere, donc Rp n'est pas verifiee.\n");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+    }
+}
+
+
 bool regle_Rpp(syllogisme *s)
 {
     // Rpp : deux prémisses particulières ne donnent pas de conclusion.
