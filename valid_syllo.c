@@ -6,7 +6,8 @@
 void validSyllo(syllogisme *s)
 {
     bool Rmt, Rlh, Rnn, Rn, Raa, Rpp, Rp, Ruu;
-
+    Rmt = regle_Rmt(s);
+    Rlh = regle_Rlh(s);
     Rnn = regle_Rnn(s); // si faux aret prog
     if (Rnn)
     {
@@ -19,7 +20,7 @@ void validSyllo(syllogisme *s)
         }
     }
 
-    if (Rnn && Rn && Raa && Rpp && Rp)
+    if (Rmt && Rlh && Rnn && Rn && Raa && Rpp && Rp)
     {
         printf("Syllogisme VALIDE \n");
     }
@@ -27,6 +28,14 @@ void validSyllo(syllogisme *s)
     {
         printf("Syllogisme INVALIDE\n");
     }
+}
+
+bool regle_Rmt(syllogisme *s)
+{
+}
+
+bool regle_Rlh(syllogisme *s)
+{
 }
 
 bool regle_Rnn(syllogisme *s)
