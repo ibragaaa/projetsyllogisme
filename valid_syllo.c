@@ -6,14 +6,20 @@
 void validSyllo(syllogisme *s)
 {
     bool Rmt, Rlh, Rnn, Rn, Raa, Rpp, Rp, Ruu;
+
     Rnn = regle_Rnn(s); // si faux aret prog
     if (Rnn)
     {
         Rn = regle_Rn(s);
         Raa = regle_Raa(s);
+        Rpp = regle_Rpp(s);
+        if (Rpp)
+        {
+            Rp = regle_Rp(s);
+        }
     }
 
-    if (Rnn && Rn)
+    if (Rnn && Rn && Raa && Rpp && Rp)
     {
         printf("Syllogisme VALIDE \n");
     }
@@ -40,7 +46,7 @@ bool regle_Rnn(syllogisme *s)
     }
     else
     {
-        printf("Deux premisse negative ne donne pas de conclusion\n");
+        printf("Rnn. Deux premisse negative ne donne pas de conclusion, donc Rnn n'est pas verifiee.\n");
         return false;
     }
 }
@@ -52,21 +58,26 @@ bool regle_Rn(syllogisme *s)
     {
         if (s->A1 && s->A2)
         {
-            printf("Rn. Les deux premisses sont positive et la conclusion est negative, donc Rnn n'est pas verifiee.\n");
+            printf("Rn. Les deux premisses sont positive et la conclusion est negative, donc Rn n'est pas verifiee.\n");
             return false;
         }
         else
         {
             if (s->A1)
             {
-                printf("Rn. La deuxieme premisse est negative et la conclusion est negative, donc Rnn est verifiee.\n");
+                printf("Rn. La deuxieme premisse est negative et la conclusion est negative, donc Rn est verifiee.\n");
             }
             else if (s->A2)
             {
-                printf("Rn. La premiere premisse est negative et la conclusion est negative, donc Rnn est verifiee.\n");
+                printf("Rn. La premiere premisse est negative et la conclusion est negative, donc Rn est verifiee.\n");
             }
             return true;
         }
+    }
+    else
+    {
+        printf("Rn. Le syllogisme n'a pas de premisse et de conclusion negative, donc Rn est verifiee.\n");
+        return true;
     }
 }
 
@@ -77,76 +88,45 @@ bool regle_Raa(syllogisme *s)
     {
         if (s->A1 && s->A2)
         {
-            printf("Rn. Les deux premisses sont positive et la conclusion l'est aussi, donc Rnn est verifiee.\n");
+            printf("Raa. Les deux premisses sont positive et la conclusion l'est aussi, donc Raa est verifiee.\n");
             return true;
         }
         else
         {
             if (s->A1)
             {
-                printf("Rn. La deuxieme premisse est negative et la conclusion est positive, donc Rnn n'est pas verifiee.\n");
+                printf("Rn. La deuxieme premisse est negative et la conclusion est positive, donc Raa n'est pas verifiee.\n");
             }
             else if (s->A2)
             {
-                printf("Rn. La premiere premisse est negative et la conclusion est positive, donc Rnn n'est pas verifiee.\n");
+                printf("Rn. La premiere premisse est negative et la conclusion est positive, donc Raa n'est pas verifiee.\n");
             }
             return false;
         }
     }
-}
-
-bool regle_Rp(syllogisme *s)
-{
-    //  Rp : si une prémisse est particulière la conclusion est particulière.
-    if(!s->Uc)
-    {
-            if(!s->U1)
-            {
-                printf("Rp. La premiere premisse est particuliere et la conclusion est particuliere, donc Rp est verifiee.\n");
-                return true;
-            }
-            else if(!s->U2)
-            {
-                printf("Rp. La seconde premisse est particuliere et la conclusion est particuliere, donc Rp est verifiee.\n");
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-    }
     else
     {
-         if(!s->U1)
-            {
-                printf("Rp. La premiere premisse est particuliere et la conclusion est particuliere, donc Rp n'est pas verifiee.\n");
-                return false;
-            }
-            else if(!s->U2)
-            {
-                printf("Rp. La seconde premisse est particuliere et la conclusion est particuliere, donc Rp n'est pas verifiee.\n");
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+        printf("Raa. Le syllogisme n'a pas deux premisses affirmatives, donc Raa est verifiee.\n");
+        return true;
     }
 }
-
 
 bool regle_Rpp(syllogisme *s)
 {
     // Rpp : deux prémisses particulières ne donnent pas de conclusion.
     if (s->U1 || s->U2)
     {
-        if (s->U1)
+        if (s->U1 && s->U2)
         {
-            printf("Rpp. Le syllogisme n’a qu’une premisse particuliere (la seconde) donc Rpp est verifiee. \n");
+            printf("Rpp. Le syllogisme n'a aucune premisse particuliere donc Rpp est verifiee. \n");
         }
-        if (s->U2)
+        else if (s->U1)
         {
-            printf("Rpp. Le syllogisme n’a qu’une premisse particuliere (la premiere) donc Rpp est verifiee. \n");
+            printf("Rpp. Le syllogisme n'a qu'une premisse particuliere (la seconde) donc Rpp est verifiee. \n");
+        }
+        else if (s->U2)
+        {
+            printf("Rpp. Le syllogisme n'a qu'une premisse particuliere (la premiere) donc Rpp est verifiee. \n");
         }
         return true;
     }
@@ -154,5 +134,46 @@ bool regle_Rpp(syllogisme *s)
     {
         printf("Rpp. Le syllogisme a deux premisse particuliere donc Rpp n'est pas verifiee. \n");
         return false;
+    }
+}
+
+bool regle_Rp(syllogisme *s)
+{
+    //  Rp : si une prémisse est particulière la conclusion est particulière.
+    if (!s->Uc)
+    {
+        if (!s->U1)
+        {
+            printf("Rp. La premiere premisse est particuliere et la conclusion est particuliere, donc Rp est verifiee.\n");
+            return true;
+        }
+        else if (!s->U2)
+        {
+            printf("Rp. La seconde premisse est particuliere et la conclusion est particuliere, donc Rp est verifiee.\n");
+            return true;
+        }
+        else
+        {
+            printf("Rp. Les deux premisses ne sont pas particuliere et la conclusion est particuliere, donc Rp n'est pas verifiee\n");
+            return false;
+        }
+    }
+    else
+    {
+        if (!s->U1)
+        {
+            printf("Rp. La premiere premisse est particuliere et la conclusion n'est pas particuliere, donc Rp n'est pas verifiee.\n");
+            return false;
+        }
+        else if (!s->U2)
+        {
+            printf("Rp. La seconde premisse est particuliere et la conclusion n'est pas particuliere, donc Rp n'est pas verifiee.\n");
+            return false;
+        }
+        else
+        {
+            printf("Rp. Les premisses ne sont pas particuliere et la conclusion n'est pas particuliere, donc Rp est verifiee.\n");
+            return true;
+        }
     }
 }
