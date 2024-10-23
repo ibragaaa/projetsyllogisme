@@ -1,8 +1,13 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
 #include "valid_syllo.h"
 
 void validSyllo(syllogisme *s)
 {
-    bool Rmt, Rlh, Rnn, Rn, Raa, Rpp, Rp, Ruu Rnn = regle_Rnn(s);
+    bool Rmt, Rlh, Rnn, Rn, Raa, Rpp, Rp, Ruu ;
+    Rnn = regle_Rnn(s);
     Rn = regle_Rn(s);
 
     if (Rmt && Rlh && Rnn && Rn && Raa && Rpp && Rp && Ruu)
